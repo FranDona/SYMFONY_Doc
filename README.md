@@ -16,6 +16,9 @@ symfony server:restart
 symfony server:stop
 -> Para servidor
 
+php bin/console doctrine:database:create
+-> Crear base de datos
+
 php bin/console make:entity
 -> Asistente para creacion de tablas y capos de ella
 
