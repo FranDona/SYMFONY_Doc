@@ -1,6 +1,79 @@
 # SYMFONY_Doc
-Documentación sobre Symfony, algunos datos curiosos sobre cosas enseñadas en clase
 
+[//]: # (version: 1.0)
+[//]: # (author: Fran Dona Villar)
+[//]: # (date: 2024-01-23)
+
+
+- [SYMFONY\_Doc](#symfony_doc)
+  - [Instalaicon Symfony](#instalaicon-symfony)
+  - [2. Crear Proyecto de Symfony](#2-crear-proyecto-de-symfony)
+  - [3. Instalacion Depedencias](#3-instalacion-depedencias)
+  - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
+
+
+## Instalaicon Symfony
+
+```console
+# Bajamos el instalador
+cd ~/Descargas
+wget https://get.symfony.com/cli/installer -O - | bash
+
+# Instalamos globalmente
+sudo mv ~/.symfony5/bin/symfony /usr/local/bin/symfony
+
+# Comprobamos
+symfony
+
+# Comprobar requerimientos
+symfony check:requirements
+
+# Si mas adelante nos sale DEPRECATED
+sudo rm /usr/local/bin/symfony
+# Y repetimos los pasos de la instalación
+```
+
+- Extensiones recomenddas para Visual Studio Code
+    - Twig Language 2 (mblode)
+    - yaml (Red Hat)
+    - Symfony for VSCode (TheNouillet)
+
+## 2. Crear Proyecto de Symfony
+```console
+# Creamos el proyecto con el nombre que queramos
+symfony new nombre_proyecto --version="6.4.*" --webapp
+
+#Tambien podemos instalar la ultima version LTS
+symfony new /var/www/html/symfony6 --version=lts
+
+# Para iniciar el proyecto
+symfony server:start
+# Estando en la carpeta del proyecto!!!
+
+# Para apagar el servidor
+symfony server:stop
+# Estando en otro bash!!!
+```
+
+## 3. Instalacion Depedencias
+```console
+# Estando en el directorio del proyecto
+composer require --dev symfony/maker-bundle
+composer require twig
+composer require symfony/form
+composer require symfony/orm-pack
+composer require annotations
+
+# Si nos da un error annotations:
+# code config/services.yaml
+# Añadir lo siguiente en la sección services:
+# annotation_reader:
+#        class: Doctrine\Common\Annotations\AnnotationReader
+php bin/console cache:clear
+composer update sensio/framework-extra-bundle
+composer require symfony/orm-pack
+composer require annotations
+```
 
 ## Comandos de Interes para Symfony
 
