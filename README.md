@@ -9,6 +9,9 @@
   - [Instalaicon Symfony](#instalaicon-symfony)
   - [2. Crear Proyecto de Symfony](#2-crear-proyecto-de-symfony)
   - [3. Instalacion Depedencias](#3-instalacion-depedencias)
+  - [4. Crear Controlador](#4-crear-controlador)
+  - [5. Crear Rutas](#5-crear-rutas)
+    - [5.1 Rutas en routes.yaml](#51-rutas-en-routesyaml)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
 
@@ -74,6 +77,61 @@ composer update sensio/framework-extra-bundle
 composer require symfony/orm-pack
 composer require annotations
 ```
+
+## 4. Crear Controlador
+```console
+php bin/console make:controller
+Choose a name for your controller class (e.g. GrumpyElephantController):
+ > Prueba
+
+ created: src/Controller/PruebaController.php
+ created: templates/prueba/index.html.twig
+
+  Success!
+  ```
+
+## 5. Crear Rutas
+
+### 5.1 Rutas en routes.yaml
+- Editaremos el archivo src/Controller/PruebaController.php
+
+```php
+<?php
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+
+class AleatorioController extends AbstractController
+{
+  //#[Route('/prueba', name: 'app_prueba')]
+    public function index(): Response
+    {
+        echo "Hola mundo";   
+        return new Response();
+    }
+}
+```
+
+- Editamos el arvhivos config/routes.yaml
+```yaml
+controllers:
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute
+
+num_prueba1:
+  path: /prueba
+  controller: App\Controller\PruebaController::index
+
+# Si queremos añadir otra ruta (ENDPOINT)
+# Copiamos, pegamos, y cambiamos nombre y path.
+num_prueba2:
+  path: /mi-prueba
+  controller: App\Controller\PruebaController::index
+  ```
+
 
 ## Comandos de Interes para Symfony
 
