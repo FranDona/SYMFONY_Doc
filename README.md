@@ -15,6 +15,8 @@
     - [5.2 Rutas con Anotaciones](#52-rutas-con-anotaciones)
   - [6.Editar Twig](#6editar-twig)
   - [7. Base de Datos en Symfony](#7-base-de-datos-en-symfony)
+  - [8. Crear entidades(tablas)](#8-crear-entidadestablas)
+    - [Relacionar Tablas con Symfony](#relacionar-tablas-con-symfony)
   - [Carpetas de Symfony](#carpetas-de-symfony)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
@@ -257,10 +259,46 @@ DATABASE_URL="mysql://root:root@127.0.0.1:3306/mi_bbdd?serverVersion=8.0.32&char
 # DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
 
 ###< doctrine/doctrine-bundle ###
-
 ```
 
 
+```console
+# Para crear la base de datos usaremos:
+php bin/console doctrine:database:create
+```
+
+## 8. Crear entidades(tablas)
+
+```console
+php bin/console make:entity
+> Articulos
+
+New property name (press <return> to stop adding fields):
+> titulo
+
+Field type (enter ? to see all types) [string]:
+> string
+
+Field length [255]:
+> 255
+
+Can this field be null in the database (nullable) (yes/no) [no]:
+> no
+
+updated: src/Entity/Articulos.php
+
+Add another property? Enter the property name (or press <return> to stop adding fields):
+>
+# INTRO!
+
+Success!
+
+Next: When you're ready, create a migration with php bin/console make:migration
+```
+> [!NOTE]
+> Si queremos añadir nonbre campos adicionales solo tendremos que escribir de nuevo el misno nombre de la tabla
+
+### Relacionar Tablas con Symfony
 
 ## Carpetas de Symfony
 
