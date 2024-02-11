@@ -12,6 +12,10 @@
   - [4. Crear Controlador](#4-crear-controlador)
   - [5. Crear Rutas](#5-crear-rutas)
     - [5.1 Rutas en routes.yaml](#51-rutas-en-routesyaml)
+    - [5.2 Rutas con Anotaciones](#52-rutas-con-anotaciones)
+  - [6.Editar Twig](#6editar-twig)
+  - [7. Configurar Base de Datos](#7-configurar-base-de-datos)
+  - [Carpetas de Symfony](#carpetas-de-symfony)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
 
@@ -102,7 +106,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
-class AleatorioController extends AbstractController
+class PruebaController extends AbstractController
 {
   //#[Route('/prueba', name: 'app_prueba')]
     public function index(): Response
@@ -132,6 +136,127 @@ num_prueba2:
   controller: App\Controller\PruebaController::index
   ```
 
+> [!CAUTION]
+> Los nombres de rutas no pueden repetirse.
+
+### 5.2 Rutas con Anotaciones
+- Editaremos el archivo en src/Controller/PruebaController.php
+
+```php
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class PruebaController extends AbstractController
+{
+    // public function index(): Response
+    // ...
+
+    // En la anotación ponemos la ruta: http://localhost:8000/prueba
+    #[Route('/prueba2', name: 'app_prueba2')]
+    public function index2(): Response
+    {
+        // ATENCIÓN: $saludo se recogerá en el twig entre llaves: {{ saludo }}
+        $saludo = "Hola mundo";   
+        return $this->('prueba/index/html.twig', [
+          'controller_name' => 'PruebaController',
+          'prueba' => $saludo,
+        ]);
+    }
+}
+```
+
+- Si queremos añadir mas rutas difderentes...
+
+```php
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+#[Route('/prueba', name: 'app_prueba_')]
+class PruebasController extends AbstractController
+{
+    #[Route('/prueba1', name: 'app_prueba1')]
+    public function prueba1(): Response
+    {
+        return $this->render('pruebas/prueba1.html.twig');
+    }
+
+    #[Route('/prueba2', name: 'app_prueba2')]
+    public function prueba2(): Response
+    {
+        return $this->render('pruebas/prueba2.html.twig');
+    }
+
+    #[Route('/prueba3', name: 'app_prueba3')]
+    public function prueba3(): Response
+    {
+        return $this->render('pruebas/prueba3.html.twig');
+    }
+}
+```
+- Dentro de cada ruta podremos poner lo que queramos en este ejemplo hemos redirigido directamente a un twig, pero no tiene que ser necesariamente así
+> [!NOTE]
+> http://localhost:8000/prueba/prueba1 <br>
+> http://localhost:8000/prueba/prueba2 <br>
+> http://localhost:8000/prueba/prueba3 
+
+
+
+## 6.Editar Twig
+Twig es un motor de plantillas para el lenguaje de programación PHP. twig permite a los desarrolladores separar la lógica de presentación del código PHP
+- Cuando creamos un controlador nos genera automaticamente un Twig.
+
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Hola PruebaController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hola {{ controller_name }}! ✅</h1>
+
+    <!-- El resto del código lo dejamos o lo borramos...-->
+    <p>  {{ prueba }} </p>
+</div>
+{% endblock %}
+```
+
+## 7. Configurar Base de Datos
+
+
+
+## Carpetas de Symfony
+
+- bin -> Ejecutables principales del sistema
+  - console -> php/bin console...
+- config -> Archivos de configuración
+  - routes -> Listado de rutas
+  - services -> Listado de Servicios creados
+- migrations -> creación de migraciones de BBDD
+- public -> Páginas publicas
+- src -> Recursos del sistema
+  - Controller -> Controladores (MVC)
+  - Entity -> Entidades (objetos)
+  - Repository -> Gestión de consultas
+- templates -> plantillas (twig)
+- var -> caché de la aplicación y registros (logs)
+- vendor -> Dependencias
+  - bin -> Ejecutables de dependencias
+    - doctrine -> BBDD
+    - var-dump-server -> Backup BBDD
+    - phpunit -> Test Unitarios
+  - Symfony -> núcleo de la aplicación
+  - sension -> Maker bundle
 
 ## Comandos de Interes para Symfony
 
