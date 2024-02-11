@@ -14,7 +14,7 @@
     - [5.1 Rutas en routes.yaml](#51-rutas-en-routesyaml)
     - [5.2 Rutas con Anotaciones](#52-rutas-con-anotaciones)
   - [6.Editar Twig](#6editar-twig)
-  - [7. Configurar Base de Datos](#7-configurar-base-de-datos)
+  - [7. Base de Datos en Symfony](#7-base-de-datos-en-symfony)
   - [Carpetas de Symfony](#carpetas-de-symfony)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
@@ -231,7 +231,34 @@ Twig es un motor de plantillas para el lenguaje de programación PHP. twig permi
 {% endblock %}
 ```
 
-## 7. Configurar Base de Datos
+## 7. Base de Datos en Symfony
+
+Para poder crear la base de datos tendremos que irnos al archivo llamado .env ubicado en la raíz de la carpeta del nuestro proyecto.
+
+Tendremos que desmarcar la línea que necesitemos según el tipo de bbdd que estemos usando, en nuestro caso será mysql
+
+```yaml
+mysql://<usuario>:<contraseña>@<host>:<puerto>/<nombre_base_datos>?serverVersion=<version>&charset=utf8mb4
+```
+```yaml
+###> symfony/framework-bundle ###
+APP_ENV=dev
+APP_SECRET=d04f9778c2872e15b0e59bdd55a683fd
+###< symfony/framework-bundle ###
+
+###> doctrine/doctrine-bundle ###
+# Format described at https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url
+# IMPORTANT: You MUST configure your server version, either here or in config/packages/doctrine.yaml
+#
+DATABASE_URL="mysql://root:root@127.0.0.1:3306/mi_bbdd?serverVersion=8.0.32&charset=utf8mb4"
+
+# DATABASE_URL="mysql://root:root@127.0.0.1:3306/soltel?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+# DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+# DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+
+###< doctrine/doctrine-bundle ###
+
+```
 
 
 
