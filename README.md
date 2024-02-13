@@ -271,34 +271,182 @@ php bin/console doctrine:database:create
 
 ```console
 php bin/console make:entity
-> Articulos
+Class name of the entity to create or update (e.g. OrangeKangaroo):
+ > Autores
 
-New property name (press <return> to stop adding fields):
-> titulo
+ created: src/Entity/Autores.php
+ created: src/Repository/AutoresRepository.php
 
-Field type (enter ? to see all types) [string]:
-> string
+ Entity generated! Now let's add some fields!
+ You can always add more fields later manually or by re-running this command.
 
-Field length [255]:
-> 255
+ New property name (press <return> to stop adding fields):
+ > nombre
 
-Can this field be null in the database (nullable) (yes/no) [no]:
-> no
+ Field type (enter ? to see all types) [string]:
+ >
 
-updated: src/Entity/Articulos.php
+ Field length [255]:
+ >
 
-Add another property? Enter the property name (or press <return> to stop adding fields):
->
-# INTRO!
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ >
 
-Success!
+ updated: src/Entity/Autores.php
 
-Next: When you're ready, create a migration with php bin/console make:migration
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ > edad
+
+ Field type (enter ? to see all types) [string]:
+ > integer
+
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ >
+  # INTRO!
+ updated: src/Entity/Autores.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ >
+
+  # INTRO!
+
+  Success!
 ```
 > [!NOTE]
 > Si queremos añadir nonbre campos adicionales solo tendremos que escribir de nuevo el misno nombre de la tabla
 
+- **Creamos una segunda tabla**
+
+```console
+php bin/console make:entity
+Class name of the entity to create or update (e.g. DeliciousChef):
+ > Articulos
+
+ Your entity already exists! So let's add some new fields!
+
+ New property name (press <return> to stop adding fields):
+ > Autor
+
+Field type (enter ? to see all types) [string]:
+ > ManyToOne
+
+ What class should this entity be related to?:
+ > Autores
+
+ Is the Articulos.autor property allowed to be null (nullable)? (yes/no) [yes]:
+ > no
+
+ Do you want to add a new property to Autores so that you can access/update Articulos objects from it - e.g. $autores->getArticulos()? (yes/no) [yes]:
+ >
+
+ A new property will also be added to the Autores class so that you can access the related Articulos objects from it.
+
+ New field name inside Autores [articulos]:
+ >
+
+ Do you want to activate orphanRemoval on your relationship?
+ A Articulos is "orphaned" when it is removed from its related Autores.
+ e.g. $autores->removeArticulos($articulos)
+
+ NOTE: If a Articulos may *change* from one Autores to another, answer "no".
+
+ Do you want to automatically delete orphaned App\Entity\Articulos objects (orphanRemoval)? (yes/no) [no]:
+ >
+
+ updated: src/Entity/Articulos.php
+ updated: src/Entity/Autores.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ >
+
+  Success!
+
+ Next: When you're ready, create a migration with php bin/console make:migration
+```
+
+- Con esto ya tendremos dos tablas en nuestra base de datos!!
+
 ### Relacionar Tablas con Symfony
+
+Para este ejemplo vamos unir la tabla creada anteriormente (Artiuclos)
+
+- Autores será la tabla principal y Articulos la tabla derivada
+- Por tanto, para crear la relación NOS VAMOS A LA DERIVADA (Articulos)
+- El tipo será ManyToOne (muchos Articulos son de 1 Autor)
+
+```console
+php bin/console make:entity
+Class name of the entity to create or update (e.g. DeliciousChef):
+ > Articulos
+
+ Your entity already exists! So let's add some new fields!
+
+ New property name (press <return> to stop adding fields):
+ > Autor
+
+Field type (enter ? to see all types) [string]:
+ > ManyToOne
+
+ What class should this entity be related to?:
+ > Autores
+
+ Is the Articulos.autor property allowed to be null (nullable)? (yes/no) [yes]:
+ > no
+
+ Do you want to add a new property to Autores so that you can access/update Articulos objects from it - e.g. $autores->getArticulos()? (yes/no) [yes]:
+ >
+
+ A new property will also be added to the Autores class so that you can access the related Articulos objects from it.
+
+ New field name inside Autores [articulos]:
+ >
+
+ Do you want to activate orphanRemoval on your relationship?
+ A Articulos is "orphaned" when it is removed from its related Autores.
+ e.g. $autores->removeArticulos($articulos)
+
+ NOTE: If a Articulos may *change* from one Autores to another, answer "no".
+
+ Do you want to automatically delete orphaned App\Entity\Articulos objects (orphanRemoval)? (yes/no) [no]:
+ >
+
+ updated: src/Entity/Articulos.php
+ updated: src/Entity/Autores.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ >
+
+  Success!
+
+ Next: When you're ready, create a migration with php bin/console make:migration
+```
+
+<br>
+Para terminar cargamos los cambios:
+<br><br>
+
+
+```console
+php bin/console make:migration
+Success!
+
+ Next: Review the new migration "migrations/Version2232323233.php"
+```
+
+Como nos dice la consola podemos ver el archivo migrations/Version2232323233.php" para personalizar los comandos SQL que se van a ejecutar respecto al SGBD.
+Por experiencia, suele ser buena idea cambiar los nombres de los FK (Foreign Key) e IDX (Index)
+Y lo trasladamos:
+
+```console
+php bin/console doctrine:migrations:migrate
+
+WARNING! You are about to execute a migration in database "symfony5" that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no) [yes]:
+ >
+  # INTRO!
+
+[notice] Migrating up to DoctrineMigrations\Version2232323233
+[notice] finished in 57.7ms, used 14M memory, 1 migrations executed, 3 sql queries
+```
 
 ## Carpetas de Symfony
 
