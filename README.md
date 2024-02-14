@@ -17,6 +17,10 @@
   - [7. Base de Datos en Symfony](#7-base-de-datos-en-symfony)
   - [8. Crear entidades(tablas)](#8-crear-entidadestablas)
     - [Relacionar Tablas con Symfony](#relacionar-tablas-con-symfony)
+  - [Persistir Objetos (Create)](#persistir-objetos-create)
+    - [Create mediante Array](#create-mediante-array)
+    - [Create mediante URL](#create-mediante-url)
+    - [Array Bidimensional](#array-bidimensional)
   - [Carpetas de Symfony](#carpetas-de-symfony)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
@@ -447,6 +451,155 @@ WARNING! You are about to execute a migration in database "symfony5" that could 
 [notice] Migrating up to DoctrineMigrations\Version2232323233
 [notice] finished in 57.7ms, used 14M memory, 1 migrations executed, 3 sql queries
 ```
+
+## Persistir Objetos (Create)
+
+Comenzamos creando un controlador
+
+```console
+# php bin/console make:controller <nombre_controlador>
+php bin/console make:controller Autores
+```
+
+### Create mediante Array
+```php
+<?php
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+// Debemos añadir las siguientes clases...
+use App\Entity\Autores;
+use Doctrine\Persistence\ManagerRegistry;
+
+class AutoresController extends AbstractController
+{
+    #[Route('/crea-autor', name: 'crea-autor')]
+    public function crearAutor(ManagerRegistry $doctrine): Response
+    {
+        // Creamos el objeto Gestor de Entidad
+        $entityManager = $doctrine->getManager();
+
+        // Defino un objeto autor
+        $autor = new Autores();
+        $autor->setNombre('Iván Rodríguez');
+        $autor->setEdad(46);
+
+        // Y lo guardo
+        $entityManager->persist($autor);
+        $entityManager->flush();
+
+        return new Response('Guardado Autor con ID -> ' . $autor->getId());
+    }
+}
+```
+
+### Create mediante URL
+```php
+<?php
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+// Debemos añadir las siguientes clases...
+use App\Entity\Autores;
+use Doctrine\Persistence\ManagerRegistry;
+
+class AutoresController extends AbstractController
+{
+    #[Route('/crea-autor', name: 'crea-autor')]
+    //public function crearAutor(ManagerRegistry $doctrine): Response
+
+    #[Route('/crea-autor/{nombre}/{edad}', name: 'crea-autor2')]
+    public function crearAutor2(ManagerRegistry $doctrine, String $nombre, int $edad): Response
+    {
+        // Creamos el objeto Gestor de Entidad
+        $entityManager = $doctrine->getManager();
+
+        // Defino un objeto autor
+        $autor = new Autores();
+        $autor->setNombre($nombre);
+        $autor->setEdad($edad);
+
+        // Y lo guardo
+        $entityManager->persist($autor);
+        $entityManager->flush();
+
+        return new Response('Guardado Autor con ID -> ' . $autor->getId());
+    }
+}
+```
+### Array Bidimensional
+
+Repetimos el mismo proceso para la segunda tabla Articulos
+
+En este caso usaremos un array bidimensional para añadir varios registros de golpe
+
+```php
+<?php
+
+namespace App\Controller;
+
+// Nuevas clases para añadir
+use App\Entity\Articulos;
+use App\Entity\Autores;
+use Doctrine\Persistence\ManagerRegistry;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class ArticulosController extends AbstractController
+{
+    /**
+     * @Route("/crea-articulos", name="create_articles")
+     */
+    public function crearArticulos(ManagerRegistry $doctrine): Response
+    {
+        $entityManager = $doctrine->getManager();
+
+        $registros = array(
+            "articulo1" => array(
+                "titulo" => 'Manual de Symfony5',
+                "publicado" => 1,
+                "autor" => 1
+            ),
+
+            "articulo2" => array(
+                "titulo" => 'Notas sobre GIT',
+                "publicado" => 0,
+                "autor" => 1
+            ),
+
+            "articulo3" => array(
+                "titulo" => 'Bienvenidos',
+                "publicado" => 1,
+                "autor" => 1
+            )
+        );
+
+        foreach ($registros as $clave => $registro) {
+            $articulo = new Articulos();
+            $articulo->setTitulo($registro['titulo']);
+            $autor = $entityManager->getRepository(Autores::class)->findOneBy(['id' => $registro['autor']]);
+            $articulo->setAutor($autor);
+            $articulo->setPublicado($registro['publicado']);
+
+            $entityManager->persist($articulo);
+            $entityManager->flush();
+        }
+
+
+        return new Response('Guardados Articulos!');
+    }
+}
+```
+
+
 
 ## Carpetas de Symfony
 
