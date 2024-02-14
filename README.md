@@ -630,6 +630,17 @@ class ArticulosController extends AbstractController
 
 ## Consultar Objetos (Read)
 
+1. Vamos a empezar sacando un SELECT * FROM articulos usando como salida una tabla HTML usando el findAll():
+
+- En src/Controller/ArticulosController
+
+```php
+// Añadimos el repositorio a las clases que usamos:
+use App\Repository\ArticulosRepository;
+```
+
+- Creamos un nuevo métod en el controlador de Artículos 
+
 ```php
   #[Route('/ver-articulos', name: 'ver-articulos')]
   public function mostrarArticulos(ArticulosRepository $repo): Response
@@ -657,6 +668,30 @@ class ArticulosController extends AbstractController
       </html>";
       return new Response($respuesta);
   }
+```
+
+2. Ahora vamos a sacar SELECT * FROM articulos WHERE id = 1 usando como salida JSON, usando el find($id):
+
+- En src/Controller/ArticulosController
+
+```php
+// Añadimos el JsonResponse para sacarlo en formato JSON (Para API REST)
+use Symfony\Component\HttpFoundation\JsonResponse;
+```
+
+```php
+#[Route('/articulo/{id}', name: 'ver-articulo')]
+public function verArticulo(ManagerRegistry $doctrine, int $id): Response
+{
+    $articulo = $doctrine->getRepository(Articulos::class)->find($id);
+    // De nuevo, sacamos el autor con el objeto completo...
+    return new JsonResponse([
+        'id' => $articulo->getId(),
+        'titulo' => $articulo->getTitulo(),
+        'publicado' => $articulo->isPublicado(),
+        'autor' => $articulo->getAutor()->getNombre(),
+    ]);
+}
 ```
 
 ## Carpetas de Symfony
