@@ -21,6 +21,8 @@
     - [Create mediante Array](#create-mediante-array)
     - [Create mediante URL](#create-mediante-url)
     - [Array Bidimensional](#array-bidimensional)
+    - [Inserccion de datos por parámetros](#inserccion-de-datos-por-parámetros)
+  - [Consultar Objetos (Read)](#consultar-objetos-read)
   - [Carpetas de Symfony](#carpetas-de-symfony)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
@@ -598,8 +600,64 @@ class ArticulosController extends AbstractController
     }
 }
 ```
+### Inserccion de datos por parámetros
 
+```php
+#[Route('/crea-articulo/{titulo}/{publicado}/{autor}', name: 'crea-articulo')]
+    public function crearArticulo(
+        ManagerRegistry $doctrine,
+        String $titulo,
+        int $publicado,
+        int $autor
+    ): Response {
+        $entityManager = $doctrine->getManager();
 
+        $articulo = new Articulos();
+        $articulo->setTitulo($titulo);
+        $articulo->setPublicado($publicado);
+
+        // Para el caso del autor, debemos buscar el autor
+        // con la ID pasada por parámetro
+        $autor = $entityManager->getRepository(Autores::class)->find($autor);
+        $articulo->setAutor($autor);
+
+        $entityManager->persist($articulo);
+        $entityManager->flush();
+
+        return new Response('Articulo agregado');
+    }
+```
+
+## Consultar Objetos (Read)
+
+```php
+  #[Route('/ver-articulos', name: 'ver-articulos')]
+  public function mostrarArticulos(ArticulosRepository $repo): Response
+  {
+      $articulos = $repo->findAll();
+      $respuesta = "<html>
+      <body>
+          <table border=1>
+              <th>ID</th>
+              <th>Titulo</th>
+              <th>publicado</th>
+              <th>autor</th>";
+      // con getAutor obtenemos el autor como objeto
+      // Con eso, sacamos lo que queramos, por ejemplo el nombre
+      foreach ($articulos as $articulo) {
+          $respuesta .= "<tr>
+          <td> " . $articulo->getId() . "</td>
+          <td> " . $articulo->getTitulo() . "</td>
+          <td> " . $articulo->isPublicado() . "</td>
+          <td> " . $articulo->getAutor()->getNombre() . "</td>
+          </tr>";
+      }
+      $respuesta .= "</table>
+      </body>
+      </html>";
+      return new Response($respuesta);
+  }
+```
 
 ## Carpetas de Symfony
 
