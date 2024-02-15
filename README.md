@@ -694,6 +694,120 @@ public function verArticulo(ManagerRegistry $doctrine, int $id): Response
 }
 ```
 
+Vamos a sacar SELECT * FROM articulos usando como salida JSON, usando el findAll():
+
+Debemos tener estas clases al princio del controlador
+
+```php
+namespace App\Controller;
+
+use App\Entity\Articulos;
+use App\Entity\Autores;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\ArticulosRepository;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+```
+
+Crearemos un nuevo metodo con su ruta
+
+```php
+#[Route('/consultar-articulos', name: 'consultar-articulos')]
+public function consultarArticulos(
+    ManagerRegistry $doctrine
+): JsonResponse {
+    $articulos = $doctrine->getRepository(Articulos::class)->findAll();
+    $json = array();
+    foreach ($articulos as $articulo) {
+        $json[] = array(
+            'id' => $articulo->getId(),
+            'titulo' => $articulo->getTitulo(),
+            'publicado' => $articulo->isPublicado(),
+        );
+    }
+
+    return new JsonResponse($json);
+}
+```
+
+Por último vamos a sacar SELECT * FROM articulos WHERE publicado=1 AND titulo = "Bienvenidos" usando como salida JSON y el método findBy():
+
+Crearemos otro metodo en el mismo controlador
+- En src/Controller/ArticulosController
+
+Añadimos el nuevo metodo
+
+```php
+#[Route('/articulos/{publicado}/{titulo}', name: 'ver-articulo2')]
+public function verArticulo2(
+    ManagerRegistry $doctrine,
+    bool $publicado,
+    String $titulo
+): JsonResponse {
+
+  // Dentro del findBy metemos 2 arrays
+  // El 1er array es para filtrar por varios campos
+  // El 2º array es para cambiar la ordenación
+  // En este caso, la id irá al revés: 3,2,1...
+    $articulos = $doctrine->getRepository(Articulos::class)->findBy(
+        [
+            'publicado' => $publicado,
+            'titulo' => $titulo
+        ],
+        ['id' => 'DESC']
+    );
+
+    $json = array();
+    foreach ($articulos as $articulo) {
+        $json[] = array(
+            'id' => $articulo->getId(),
+            'titulo' => $articulo->getTitulo(),
+            'publicado' => $articulo->isPublicado(),
+        );
+    }
+    return new JsonResponse($json);
+}
+```
+
+Podemos comprobar todo lo anterior desde mysql:
+
+```mysql
+mysql> SELECT * FROM articulos WHERE id = 1;
++----+----------+--------------------+-----------+
+| id | autor_id | titulo             | publicado |
++----+----------+--------------------+-----------+
+|  1 |        1 | Manual de Symfony5 |         1 |
++----+----------+--------------------+-----------+
+1 row in set (0,00 sec)
+
+mysql> SELECT * FROM articulos;
++----+----------+--------------------+-----------+
+| id | autor_id | titulo             | publicado |
++----+----------+--------------------+-----------+
+|  1 |        1 | Manual de Symfony5 |         1 |
+|  2 |        1 | Notas sobre GIT    |         0 |
+|  3 |        1 | Bienvenidos        |         1 |
+|  4 |        1 | Manual de Symfony5 |         1 |
+|  5 |        1 | Notas sobre GIT    |         0 |
+|  6 |        1 | Bienvenidos        |         1 |
++----+----------+--------------------+-----------+
+6 rows in set (0,00 sec)
+
+mysql> SELECT * FROM articulos
+    -> WHERE publicado=1 AND titulo = "Bienvenidos";
++----+----------+-------------+-----------+
+| id | autor_id | titulo      | publicado |
++----+----------+-------------+-----------+
+|  3 |        1 | Bienvenidos |         1 |
+|  6 |        1 | Bienvenidos |         1 |
++----+----------+-------------+-----------+
+2 rows in set (0,00 sec)
+```
+
+
 ## Carpetas de Symfony
 
 - bin -> Ejecutables principales del sistema
