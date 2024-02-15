@@ -486,7 +486,7 @@ class AutoresController extends AbstractController
 
         // Defino un objeto autor
         $autor = new Autores();
-        $autor->setNombre('Iván Rodríguez');
+        $autor->setNombre('Fran Dona');
         $autor->setEdad(46);
 
         // Y lo guardo
