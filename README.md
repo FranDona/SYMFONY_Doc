@@ -9,7 +9,10 @@
   - [Instalaicon Symfony](#instalaicon-symfony)
   - [2. Crear Proyecto de Symfony](#2-crear-proyecto-de-symfony)
   - [3. Instalacion Depedencias](#3-instalacion-depedencias)
-  - [4. Crear Controlador](#4-crear-controlador)
+  - [4. Repositorio GitHub](#4-repositorio-github)
+    - [4.1 Añadir Proyecto Symfony a Repositorio](#41-añadir-proyecto-symfony-a-repositorio)
+    - [4.2 Descargar y usar Symfony desde un Repositorio](#42-descargar-y-usar-symfony-desde-un-repositorio)
+  - [5. Crear Controlador](#5-crear-controlador)
   - [5. Crear Rutas](#5-crear-rutas)
     - [5.1 Rutas en routes.yaml](#51-rutas-en-routesyaml)
     - [5.2 Rutas con Anotaciones](#52-rutas-con-anotaciones)
@@ -90,7 +93,46 @@ composer require symfony/orm-pack
 composer require annotations
 ```
 
-## 4. Crear Controlador
+## 4. Repositorio GitHub
+
+### 4.1 Añadir Proyecto Symfony a Repositorio
+
+```console
+# En cualquier momento podemos ver si lo tenemos todo para instalar una aplicación Symfony:
+symfony check:requirements
+# Y procedemos a crear un proyecto para un microservicio, aplicación de copnsola o API
+symfony new symfony5-manual
+```
+
+1. Comenzamos creando un repositorio en GitHub, le damos un nombre, una descripción. Con eso sería suficiente por el momento
+
+2. Cuando tengamos el proyecto de symfony creado localmente iremos a su raíz y lo sincronizaremos.
+   
+    ```console
+    cd nombre_proyecto
+    git branch -M main
+    git status #Para confirmar que estamos en main
+    git remote add origin https://github.com/USERNAME/nombre_proyecto.git
+    git add .
+    git commit -m "[+] Cambios añadidos" 
+    git push -u origin main
+    #Colocamos nuestro Usuario, nuestro Token y comenzara la subida al repositorio 
+    ```
+
+### 4.2 Descargar y usar Symfony desde un Repositorio
+
+1. Descargamos y descomprimimos el proyecto Symfony desde GitHub
+2. Lo metemos dentro de nuestra carpeta /var/www/html
+
+  ```conole
+  #Instalamos todas las dependecias del proyecto
+  composer install
+
+  #Iniciamos el servidor
+  symfony server:start
+  ```
+  
+## 5. Crear Controlador
 ```console
 php bin/console make:controller
 Choose a name for your controller class (e.g. GrumpyElephantController):
