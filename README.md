@@ -27,6 +27,9 @@
     - [Inserccion de datos por parámetros](#inserccion-de-datos-por-parámetros)
   - [Consultar Objetos (Read)](#consultar-objetos-read)
   - [Consultar objetos (Avanzado)](#consultar-objetos-avanzado)
+  - [Leer objetos (Read)](#leer-objetos-read)
+    - [Vista en twig](#vista-en-twig)
+    - [Vista json](#vista-json)
   - [Actualizar Objetos](#actualizar-objetos)
   - [Eliminar Objetos](#eliminar-objetos)
   - [Carpetas de Symfony](#carpetas-de-symfony)
@@ -887,6 +890,72 @@ Creamos un nuevo metodo en el controlador de Articulos
 
         // Con el dump, sacamos el array completo
         return new JsonResponse(dump($articulos));
+    }
+```
+
+## Leer objetos (Read)
+
+### Vista en twig
+Primero empezaremos creando la ruta en el controlador:
+```php
+    #[Route('/consultar', name: 'consultar')]
+    public function consultar(EntityManagerInterface $gestorEntidades): Response
+    {
+        $repoModelos = $gestorEntidades->getRepository(nombreEntity::class);
+        $campos = $repoCampos->joinCampo();
+   
+        return $this->render('campos/index.html.twig', [
+            'controller_name' => 'CamposController',
+            'campos' => $campos,
+        ]);
+    }
+```
+
+En nuestro .twig correspondiente podremos crear una tabla para mostrar los datos que queramos de la siguiente manera:
+
+```twig
+{% block body %}
+    <table>
+        <thead>
+            <tr>
+                <th>Campo 1</th>
+                <th>Campo 2</th>
+                <th>Campo 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campo in campos %}
+            <tr>
+                <td>{{ nombreTabla.campo1 }}</td>
+                <td>{{ nombreTabla.campo2 }}</td>
+                <td>{{ nombreTabla.campo3 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+```
+
+### Vista json
+
+Dentro del controlador crearemos una nueva ruta la cual servira para imprimir los datos en formato json:
+
+```php
+#[Route('/consultarJSON', name: 'consultar_json')]
+    public function consultarJSON(EntityManagerInterface $gestorEntidades): JsonResponse
+    {
+        $repoCamopos = $gestorEntidades->getRepository(nombreEntity::class);
+        $campos = $repoModelos->joinCampos();
+
+        $json = [];
+        foreach ($campos as $campo) {
+            $json[] = [
+                "Campo 1" => $campo1["campo1"],
+                "Campo 2" => $campo2["campo2"],
+                "Campo 3" => $campo3["campo3"],
+            ]; 
+        }
+        return new JsonResponse($json);
     }
 ```
 
