@@ -28,6 +28,7 @@
   - [Consultar Objetos (Read)](#consultar-objetos-read)
   - [Consultar objetos (Avanzado)](#consultar-objetos-avanzado)
   - [Actualizar Objetos](#actualizar-objetos)
+  - [Eliminar Objetos](#eliminar-objetos)
   - [Carpetas de Symfony](#carpetas-de-symfony)
   - [Comandos de Interes para Symfony](#comandos-de-interes-para-symfony)
 
@@ -912,6 +913,20 @@ public function cambiarArticulo(ManagerRegistry $doctrine, int $id, String $titu
             'id' => $articulo->getId()
     ]);
 }
+```
+
+## Eliminar Objetos
+
+```php
+    #[Route('/eliminar/{id}', name: 'eliminar')]
+    public function eliminar(EntityManagerInterface $gestorEntidades, int $id): Response
+    {
+
+        $repoModelos = $gestorEntidades->getRepository(Modelos::class);
+        $repoModelos->borraModelo($gestorEntidades,$id);
+        
+        return $this->redirectToRoute("app_modelos_consultar_json");
+    }
 ```
 
 ## Carpetas de Symfony
